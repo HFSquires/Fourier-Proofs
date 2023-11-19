@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{defaultpackages}
+
+\hypersetup{pdftitle={Harrison's Fourier Proofs},pdfpagemode=FullScreen}
+
+
+
+
+\title{Fourier Proofs}
+\author{Harrison Squires - s2191671}
+\date{November 2023}
+
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+
+
+\tableofcontents
+\thispagestyle{empty}
+
+
+
+\newpage
+\clearpage
+\pagenumbering{arabic} 
+\section{Important definitions for the course}
+\begin{itemize}
+\item
+The complex basis function is defined as:
+\begin{equation*}
+    \phi_m (x)=e^{ik_mx}
+\end{equation*}
+\item 
+Integral of dirac-delta:
+\begin{equation*}
+\intinf \delta(x - a) \, dx = \begin{cases} 1, & \text{if } x = a \\ 0, & \text{otherwise} \end{cases}
+\end{equation*}
+
+\item 
+Integral form of dirac-delta:
+\begin{equation} \label{eq:IFDD}
+    \delta(x-a) = \frac{1}{2\pi}\intinf e^{ik(x-a)}\;dk
+\end{equation}
+
+\item
+Wave number defined as:
+\begin{equation*}
+    k_n = \frac{n\pi}{L}
+\end{equation*}
+
+\end{itemize}
+\newpage
+\section{Derivation of complex fourier coefficients}
+\begin{align}
+    f(x) &= \sum_{n=-\infty}^\infty c_n\exp(ik_nx) \label{complexcoef}\\ 
+    \implies \int_{-L}^L f(x)\exp(-ik_mx)\;dx&=\int_{-L}^L \exp(-ik_mx)\sum_{n=-\infty}^\infty c_n\exp(ik_nx)\;dx \label{complexcoef2}\\
+    \implies  \int_{-L}^L f(x)\exp(-ik_mx)\;dx&=\sum_{n=-\infty}^\infty c_n\int_{-L}^L \exp(-ik_nx)\exp(ik_nx) \; dx\\
+    \implies  \int_{-L}^L f(x)\exp(-ik_mx)\;dx&=c_n 2L\delta_{mn}\\
+    \implies c_n  &= \frac{1}{2L}\int_{-L}^Lf(x)\exp(-ik_nx)\;dx \label{complexcoefflast}
+\end{align}
+
+Here between Eq. \ref{complexcoef} and Eq. \ref{complexcoef2} both sides have been multiplied by $\exp(-ik_mx)$ and integrated with respect to $x$ in the boundary $\left [-L ,L\right ]$. In Eq. \ref{complexcoefflast} the index is swapped to n using property of the Kronecker-delta, $\delta_{mn}$.
+
+\newpage
+\section{Proof of orthogonality relation (complex)} \label{sec:ortho}
+\begin{align*}
+    \int_{-L}^{L} dx \;\phi_m \phi_n^* &= \int_{-L}^{L} dx \;e^{i(k_m-k_n)x}\\
+    &=\begin{cases}
+      \left [x \right]^L_{-L}, & \text{if}\ m=n \\
+      \frac{1}{i(k_m-k_n)}e^{i(k_m-k_n)x}, & \text{if}\ m\neq n
+    \end{cases} \\
+    &=\begin{cases}
+      2L, & \text{if}\ m=n \\
+      0, & \text{if}\ m\neq n
+    \end{cases}\\
+    &= 2L\delta_{mn}
+\end{align*}
+This is the defintion of orthogonality, the product of two functions integrated over some space evaluates to 0, if they are mutually orthogonal.
+
+\newpage
+\section{Proof of convolution theorem}
+The convolution theorem is:
+\begin{equation}
+    f(x)*g(x)=\tilde{f}(k)\tilde{g}(k)
+\end{equation}
+The definition of a convolution is: 
+\begin{equation}
+    f(x)*g(x) = \intinf dy\;f(x-y)g(y)
+\end{equation}
+The arguments of f \& g can be swapped round, this is not intuitive but true.
+\begin{align*}
+    f*g &= \intinf f(y)g(x-y) \\
+    f(y)&= \frac{1}{2\pi}\intinf\FT{f}e^{-iky}\;dk \\
+    g(x-y)&=\frac{1}{2\pi}\intinf\FTp{g}e^{-ik{'}(x-y)}\;dk{'} \label{primed} \\
+    \implies f*g &= \frac{1}{(2\pi)^2} \intinf dy \intinf\FT{f}e^{-iky}\;dk\intinf\FTp{g}e^{-ik{'}(x-y)}\;dk{'}\\
+    &=\frac{1}{(2\pi)^2}\intinf dk\; \FT{f}\intinf dk{'} \FTp{g} e^{ik{'}x} 
+    \left ( \intinf e^{-i(k-k')y} dy \right )\ \\
+    \implies \left ( \intinf e^{-i(k-k')y} dy \right ) &= 2\pi \delta(k-k') = 2\pi \delta_{kk'}\ \color{blue}\leftarrow\text{(Using the integral form of the dirac-delta , Eq.\ref{eq:IFDD})}\\
+    \implies f*g &= \frac{1}{2\pi} \intinf \FT{f}\;dk\left ( \intinf \FTp{g} e^{ik'x} \delta_{kk'} dk' \right)\\
+    &= \frac{1}{2\pi} \intinf \FT{f}\FT{g}e^{ikx}dk \\
+    \implies \widetilde{f*g} &= \FT{f}\FT{g}  
+\end{align*}
+$k{'}$ is used as opposed to $k$ to show the two integrals are different.
+
+\newpage
+\section{Proof of Parseval's theorem using integral form of Dirac-delta}
+
+    Parseval's theorem states:
+    \begin{align*}
+    \intinf |f(x)|^2 \, dx &= \intinf |\FT{f}|^2 \, dk \\
+    &= \intinf f(x) \cdot f^*(x) \, dx \\
+    &= \intinf dx \,\left(\frac{1}{2\pi} \intinf \FT{f} \, e^{ikx} \, dk\right) \left(\frac{1}{2\pi} \intinf \FTp{f^*}\, e^{-ik'x} \, dk'\right)  \\
+    &= \frac{1}{(2\pi)^2} \intinf \intinf \FT{f} \, \FTp{f^*} \, 2\pi \, \delta(k - k') \, dk \, dk'\ \color{blue}\leftarrow\text{(Using Eq.\ref{eq:IFDD})} \\
+    &= \frac{1}{2\pi} \int_{-\infty}^{\infty} |\tilde{f}(k)|^2 \, dk
+    \end{align*}
+Here the defintion of the FT has been applied to both $f(x)$ and $f^*(x)$.
+
+\newpage
+\section{FT of exponentially decaying function}
+Let:
+\begin{equation*}
+    h(t) = e^{-a|t|}, \ \text{where } a > 0
+\end{equation*}
+The fourier transform of $h(t)$, $\FT{h}$ is given by:
+\begin{equation*}
+    \FT{h} = \intinf e^{-a\abs{t}} e^{-ikt} \ dt
+\end{equation*}
+\textbf{Proof}
+\begin{align*}
+    \FT{h} &= \intinf e^{-a\abs{t}} e^{-ikt} \ dt \\
+    &= \intinf e^{-a\abs{t}-ikt} \ dt \\
+    &=\int^\infty_0 e^{-(ik-a)t} \ dt +\int_{-\infty}^0 e^{-(a-ik)t} \ dt \\
+    &=\left [ \frac{1}{a-ik}e^{-(ik-a)t} \right ]^\infty_0 
+    + \left [ \frac{1}{-a-ik}e^{-(a+ik)t} \right ]^0_{-\infty} \\
+    &= \frac{1}{a-ik} + \frac{1}{a+ik}\\
+    &= \frac{2a}{a^2+k^2}
+\end{align*}
+\end{document}
